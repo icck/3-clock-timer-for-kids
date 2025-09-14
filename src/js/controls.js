@@ -66,9 +66,6 @@ class ControlManager {
         // タイマーを開始
         this.timer.start();
         
-        // ブロック管理を開始
-        this.startBlockRemoval();
-        
         // UIを更新
         this.updateUI();
         
@@ -131,30 +128,6 @@ class ControlManager {
         }
     }
 
-    /**
-     * ブロック削除を開始
-     */
-    startBlockRemoval() {
-        // 5秒ごとにブロックを削除
-        const blockInterval = setInterval(() => {
-            if (!this.timer || !this.timer.isRunning()) {
-                clearInterval(blockInterval);
-                return;
-            }
-
-            this.blockManager.removeBlock();
-            
-            // 1分ごとに色を変更
-            const currentMinute = this.timer.getCurrentMinute();
-            this.blockManager.updateBlockColors(currentMinute);
-            
-            // タイマー完了チェック
-            if (this.timer.getRemainingTime() <= 0) {
-                clearInterval(blockInterval);
-                this.handleTimerComplete();
-            }
-        }, 5000); // 5秒間隔
-    }
 
     /**
      * タイマー完了の処理
@@ -204,19 +177,26 @@ class ControlManager {
 
         const isRunning = this.timer.isRunning();
         const remainingTime = this.timer.getRemainingTime();
+        const isCompleted = remainingTime === 0;
         
         // ボタンの表示/非表示
         if (this.startButton) {
-            this.startButton.style.display = isRunning ? 'none' : 'block';
+            // タイマー完了時はスタートボタンを非表示
+            this.startButton.style.display = (isRunning || isCompleted) ? 'none' : 'block';
         }
         
         if (this.restartButton) {
-            this.restartButton.style.display = isRunning ? 'block' : 'none';
+            // タイマー実行中または完了時にリスタートボタンを表示
+            this.restartButton.style.display = (isRunning || isCompleted) ? 'block' : 'none';
         }
         
         // ボタンのテキストを更新
         if (this.startButton) {
             this.startButton.textContent = remainingTime === this.timer.duration ? 'スタート' : '再開';
+        }
+        
+        if (this.restartButton) {
+            this.restartButton.textContent = isCompleted ? 'もう一度' : 'リセット';
         }
     }
 

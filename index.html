@@ -10,22 +10,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container" role="main" aria-labelledby="timer-title">
-        <h1 id="timer-title">3分タイマー</h1>
+    <div class="container" role="main">
         <div class="timer-display" role="timer" aria-live="polite" aria-label="タイマーの進捗">
             <div class="blocks-container" id="blocks-container" aria-label="残り時間を表すブロック">
                 <!-- ブロックはJavaScriptで動的に生成 -->
             </div>
         </div>
         <div class="controls" role="group" aria-label="タイマーコントロール">
-            <button id="start-button" class="start-btn" aria-label="タイマーを開始する">スタート</button>
-            <button id="restart-button" class="restart-btn" style="display: none;" aria-label="タイマーをリセットする">もう一度</button>
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <div class="progress-text" id="progress-text">0%</div>
+            <button id="start-button" class="start-btn" data-testid="start-button" aria-label="タイマーを開始する">スタート</button>
+            <button id="restart-button" class="restart-btn" data-testid="restart-button" style="display: none;" aria-label="タイマーをリセットする">もう一度</button>
         </div>
         <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true">
             スタートボタンを押してタイマーを開始してください

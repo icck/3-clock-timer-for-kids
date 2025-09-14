@@ -6,7 +6,7 @@ class BlockManager {
     constructor() {
         this.container = document.getElementById('blocks-container');
         this.blocks = [];
-        this.totalBlocks = 36; // 3分 = 180秒 ÷ 5秒 = 36ブロック
+        this.totalBlocks = 180; // 3分 = 180個のブロック（1秒ごと）
         this.removedBlocks = 0;
         this.currentMinute = 0;
         this.colorManager = null;
@@ -28,26 +28,54 @@ class BlockManager {
         this.container.innerHTML = '';
         this.blocks = [];
 
-        for (let i = 0; i < this.totalBlocks; i++) {
-            const block = this.createBlock(i);
-            this.blocks.push(block);
-            this.container.appendChild(block);
+        // 3つのセクション（各60ブロック）を作成
+        for (let minute = 0; minute < 3; minute++) {
+            const section = this.createBlockSection(minute);
+            this.container.appendChild(section);
+            
+            // 各セクションに60個のブロックを作成
+            for (let i = 0; i < 60; i++) {
+                const block = this.createBlock(minute * 60 + i, minute);
+                this.blocks.push(block);
+                section.appendChild(block);
+            }
         }
+    }
+
+    /**
+     * ブロックセクションを作成
+     * @param {number} minute 分（0-2）
+     * @returns {HTMLElement} セクション要素
+     */
+    createBlockSection(minute) {
+        const section = document.createElement('div');
+        section.className = 'block-section';
+        section.dataset.minute = minute;
+        section.dataset.testid = `block-section-${minute}`;
+        
+        // 1分目のみアクティブ
+        if (minute === 0) {
+            section.classList.add('active');
+        }
+        
+        return section;
     }
 
     /**
      * 個別のブロック要素を作成
      * @param {number} index ブロックのインデックス
+     * @param {number} minute 所属する分（0-2）
      * @returns {HTMLElement} ブロック要素
      */
-    createBlock(index) {
+    createBlock(index, minute) {
         const block = document.createElement('div');
         block.className = 'block';
         block.dataset.index = index;
-        block.textContent = index + 1;
+        block.dataset.minute = minute;
+        block.dataset.testid = `block-${index}`;
         
         // 初期色を設定
-        block.style.backgroundColor = this.getColorForMinute(0);
+        block.style.background = this.getColorForMinute(minute);
         
         return block;
     }
@@ -78,17 +106,34 @@ class BlockManager {
     }
 
     /**
-     * 5秒ごとにブロックを1つ削除
+     * 1秒ごとにブロックを1つ削除（上段→中段→下段の順で、各段内では右から左へ）
      */
     removeBlock() {
         if (this.removedBlocks >= this.totalBlocks) {
             return;
         }
 
-        const blockIndex = this.removedBlocks;
+        // 上段→中段→下段の順で削除
+        // 上段（0-59）→ 中段（60-119）→ 下段（120-179）
+        let blockIndex;
+        
+        if (this.removedBlocks < 60) {
+            // 上段: 右から左（59, 58, 57, ..., 0）
+            blockIndex = 59 - this.removedBlocks;
+        } else if (this.removedBlocks < 120) {
+            // 中段: 右から左（119, 118, 117, ..., 60）
+            blockIndex = 119 - (this.removedBlocks - 60);
+        } else {
+            // 下段: 右から左（179, 178, 177, ..., 120）
+            blockIndex = 179 - (this.removedBlocks - 120);
+        }
+        
         const block = this.blocks[blockIndex];
         
         if (block) {
+            // ブロックに削除クラスを追加
+            block.classList.add('removed');
+            
             // アニメーション管理システムを使用してブロックを削除
             if (this.animationManager && typeof this.animationManager.fadeOutBlock === 'function') {
                 this.animationManager.fadeOutBlock(block, 500).then(() => {
@@ -103,12 +148,23 @@ class BlockManager {
             }
 
             this.removedBlocks++;
-            console.log(`ブロック ${blockIndex + 1} を削除しました (残り: ${this.totalBlocks - this.removedBlocks})`);
+            
+            // 段の情報を表示
+            let rowInfo = '';
+            if (this.removedBlocks <= 60) {
+                rowInfo = `上段 (${this.removedBlocks}/60)`;
+            } else if (this.removedBlocks <= 120) {
+                rowInfo = `中段 (${this.removedBlocks - 60}/60)`;
+            } else {
+                rowInfo = `下段 (${this.removedBlocks - 120}/60)`;
+            }
+            
+            console.log(`ブロック ${blockIndex + 1} を削除しました (${rowInfo}, 残り: ${this.totalBlocks - this.removedBlocks})`);
         }
     }
 
     /**
-     * 1分ごとにブロックの色を変更
+     * 1分ごとにブロックセクションの色を変更
      * @param {number} minute 現在の分（0-2）
      */
     updateBlockColors(minute) {
@@ -118,6 +174,19 @@ class BlockManager {
 
         this.currentMinute = minute;
         const newColor = this.getColorForMinute(minute);
+
+        // 前のセクションを非アクティブにする
+        const previousSection = document.querySelector(`.block-section[data-minute="${this.currentMinute - 1}"]`);
+        if (previousSection) {
+            previousSection.classList.remove('active');
+        }
+
+        // 現在のセクションをアクティブにする
+        const currentSection = document.querySelector(`.block-section[data-minute="${minute}"]`);
+        if (currentSection) {
+            currentSection.classList.add('active');
+            currentSection.classList.add('color-transition');
+        }
 
         // 残っているブロックの色を更新（アニメーション付き）
         const remainingBlocks = this.blocks.filter((block, index) => 
@@ -130,7 +199,7 @@ class BlockManager {
         } else {
             // 通常の色変更
             remainingBlocks.forEach(block => {
-                block.style.backgroundColor = newColor;
+                block.style.background = newColor;
             });
         }
 
@@ -144,9 +213,9 @@ class BlockManager {
      */
     getColorForMinute(minute) {
         const colors = [
-            '#4CAF50', // 0分: 緑
-            '#FF9800', // 1分: オレンジ
-            '#F44336'  // 2分: 赤
+            'linear-gradient(135deg, #4CAF50, #66BB6A)', // 0分: 緑グラデーション
+            'linear-gradient(135deg, #FF9800, #FFB74D)', // 1分: オレンジグラデーション
+            'linear-gradient(135deg, #F44336, #EF5350)'  // 2分: 赤グラデーション
         ];
         
         return colors[minute] || colors[0];

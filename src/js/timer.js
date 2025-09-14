@@ -6,7 +6,7 @@ class Timer {
     constructor() {
         this.duration = 180; // 3分 = 180秒
         this.remainingTime = this.duration;
-        this.isRunning = false;
+        this._isRunning = false;
         this.intervalId = null;
         this.onTick = null;
         this.onComplete = null;
@@ -17,11 +17,11 @@ class Timer {
      * タイマーを開始する
      */
     start() {
-        if (this.isRunning) {
+        if (this._isRunning) {
             return;
         }
 
-        this.isRunning = true;
+        this._isRunning = true;
         this.startTime = Date.now();
         
         // 1秒ごとにタイマーを更新
@@ -36,11 +36,11 @@ class Timer {
      * タイマーを停止する
      */
     stop() {
-        if (!this.isRunning) {
+        if (!this._isRunning) {
             return;
         }
 
-        this.isRunning = false;
+        this._isRunning = false;
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
@@ -63,7 +63,7 @@ class Timer {
      * タイマーの1秒ごとの処理
      */
     tick() {
-        if (!this.isRunning) {
+        if (!this._isRunning) {
             return;
         }
 
@@ -169,7 +169,7 @@ class Timer {
      * @returns {boolean} 動作中の場合true
      */
     isRunning() {
-        return this.isRunning;
+        return this._isRunning;
     }
 
     /**
