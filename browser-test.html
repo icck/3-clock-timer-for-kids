@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ブラウザ互換性テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>ブラウザ互換性テスト</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        function runBrowserTests() {
+            const results = document.getElementById('test-results');
+            
+            // ブラウザ情報
+            const userAgent = navigator.userAgent;
+            results.innerHTML += `<div class="test-result info">ブラウザ: ${userAgent}</div>`;
+            
+            // ES6対応テスト
+            if (typeof Symbol !== 'undefined') {
+                results.innerHTML += '<div class="test-result pass">✅ ES6対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ ES6対応: NG</div>';
+            }
+            
+            // Web Audio API対応テスト
+            if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                results.innerHTML += '<div class="test-result pass">✅ Web Audio API対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ Web Audio API対応: NG</div>';
+            }
+            
+            // CSS Grid対応テスト
+            if (CSS.supports('display', 'grid')) {
+                results.innerHTML += '<div class="test-result pass">✅ CSS Grid対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ CSS Grid対応: NG</div>';
+            }
+            
+            // CSS Flexbox対応テスト
+            if (CSS.supports('display', 'flex')) {
+                results.innerHTML += '<div class="test-result pass">✅ CSS Flexbox対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ CSS Flexbox対応: NG</div>';
+            }
+            
+            // CSS Animations対応テスト
+            if (CSS.supports('animation', 'name 1s ease')) {
+                results.innerHTML += '<div class="test-result pass">✅ CSS Animations対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ CSS Animations対応: NG</div>';
+            }
+            
+            // Local Storage対応テスト
+            if (typeof Storage !== 'undefined') {
+                results.innerHTML += '<div class="test-result pass">✅ Local Storage対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ Local Storage対応: NG</div>';
+            }
+            
+            // タッチイベント対応テスト
+            if ('ontouchstart' in window) {
+                results.innerHTML += '<div class="test-result pass">✅ タッチイベント対応: OK</div>';
+            } else {
+                results.innerHTML += '<div class="test-result info">ℹ️ タッチイベント対応: デスクトップブラウザ</div>';
+            }
+            
+            // 画面サイズ情報
+            results.innerHTML += `<div class="test-result info">画面サイズ: ${window.innerWidth}x${window.innerHeight}</div>`;
+            
+            // デバイスピクセル比
+            results.innerHTML += `<div class="test-result info">デバイスピクセル比: ${window.devicePixelRatio}</div>`;
+        }
+        
+        // ページ読み込み後にテスト実行
+        window.addEventListener('load', runBrowserTests);
+    </script>
+</body>
+</html>
