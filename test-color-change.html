@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テスト: ブロック色変更</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+        .block { width: 30px; height: 30px; background-color: #4CAF50; margin: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>テスト: ブロック色変更機能</h1>
+    <div id="test-results"></div>
+    <div id="blocks-container">
+        <div class="block" data-index="0"></div>
+        <div class="block" data-index="1"></div>
+        <div class="block" data-index="2"></div>
+        <div class="block" data-index="3"></div>
+    </div>
+    
+    <script>
+        function runTest() {
+            const results = document.getElementById('test-results');
+            
+            // テスト1: 色管理システムが存在するか
+            if (typeof ColorManager !== 'undefined') {
+                results.innerHTML += '<div class="test-result pass">✅ ColorManagerクラスが存在します</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ ColorManagerクラスが見つかりません</div>';
+            }
+            
+            // テスト2: 1分ごとに色が変わるか
+            if (typeof ColorManager !== 'undefined') {
+                try {
+                    const colorManager = new ColorManager();
+                    const initialColor = getComputedStyle(document.querySelector('.block')).backgroundColor;
+                    
+                    // 1分後に色が変わっているかテスト
+                    setTimeout(() => {
+                        const newColor = getComputedStyle(document.querySelector('.block')).backgroundColor;
+                        if (newColor !== initialColor) {
+                            results.innerHTML += '<div class="test-result pass">✅ ブロックの色が1分後に変更されました</div>';
+                        } else {
+                            results.innerHTML += '<div class="test-result fail">❌ ブロックの色が変更されませんでした</div>';
+                        }
+                    }, 61000); // 61秒後にチェック
+                    
+                    results.innerHTML += '<div class="test-result pass">✅ 色変更テストを開始しました</div>';
+                } catch (error) {
+                    results.innerHTML += '<div class="test-result fail">❌ 色変更テストでエラー: ' + error.message + '</div>';
+                }
+            }
+        }
+        
+        // ページ読み込み後にテスト実行
+        window.addEventListener('load', runTest);
+    </script>
+</body>
+</html>

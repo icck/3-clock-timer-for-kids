@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テスト: タイマー開始</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>テスト: タイマー開始機能</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        function runTest() {
+            const results = document.getElementById('test-results');
+            
+            // テスト1: スタートボタンが存在するか
+            const startButton = document.getElementById('start-button');
+            if (startButton) {
+                results.innerHTML += '<div class="test-result pass">✅ スタートボタンが存在します</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ スタートボタンが見つかりません</div>';
+            }
+            
+            // テスト2: タイマー状態管理が存在するか
+            if (typeof Timer !== 'undefined') {
+                results.innerHTML += '<div class="test-result pass">✅ Timerクラスが存在します</div>';
+            } else {
+                results.innerHTML += '<div class="test-result fail">❌ Timerクラスが見つかりません</div>';
+            }
+            
+            // テスト3: スタートボタンクリックでタイマーが開始されるか
+            if (startButton && typeof Timer !== 'undefined') {
+                try {
+                    const timer = new Timer();
+                    timer.start();
+                    if (timer.isRunning()) {
+                        results.innerHTML += '<div class="test-result pass">✅ タイマーが開始されました</div>';
+                    } else {
+                        results.innerHTML += '<div class="test-result fail">❌ タイマーが開始されませんでした</div>';
+                    }
+                } catch (error) {
+                    results.innerHTML += '<div class="test-result fail">❌ タイマー開始でエラー: ' + error.message + '</div>';
+                }
+            }
+        }
+        
+        // ページ読み込み後にテスト実行
+        window.addEventListener('load', runTest);
+    </script>
+</body>
+</html>
