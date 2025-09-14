@@ -102,6 +102,9 @@ class TimerApp {
      * @param {number} remainingTime 残り時間
      */
     handleTimerTick(remainingTime) {
+        // ブロックを1つ削除
+        this.blockManager.removeBlock();
+        
         // 進捗を更新
         this.updateProgress();
         
@@ -167,28 +170,6 @@ class TimerApp {
     updateProgress() {
         if (this.controlManager) {
             this.controlManager.updateProgress();
-        }
-        
-        // 進捗バーを更新
-        this.updateProgressBar();
-    }
-
-    /**
-     * 進捗バーを更新
-     */
-    updateProgressBar() {
-        if (!this.timer) return;
-
-        const progress = this.timer.getProgress();
-        const progressFill = document.getElementById('progress-fill');
-        const progressText = document.getElementById('progress-text');
-        
-        if (progressFill) {
-            progressFill.style.width = `${progress * 100}%`;
-        }
-        
-        if (progressText) {
-            progressText.textContent = `${Math.round(progress * 100)}%`;
         }
     }
 

@@ -6,7 +6,7 @@ class Timer {
     constructor() {
         this.duration = 180; // 3分 = 180秒
         this.remainingTime = this.duration;
-        this.isRunning = false;
+        this._isRunning = false;
         this.intervalId = null;
         this.onTick = null;
         this.onComplete = null;
@@ -17,11 +17,11 @@ class Timer {
      * タイマーを開始する
      */
     start() {
-        if (this.isRunning) {
+        if (this._isRunning) {
             return;
         }
 
-        this.isRunning = true;
+        this._isRunning = true;
         this.startTime = Date.now();
         
         // 1秒ごとにタイマーを更新
@@ -36,11 +36,11 @@ class Timer {
      * タイマーを停止する
      */
     stop() {
-        if (!this.isRunning) {
+        if (!this._isRunning) {
             return;
         }
 
-        this.isRunning = false;
+        this._isRunning = false;
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
@@ -63,7 +63,7 @@ class Timer {
      * タイマーの1秒ごとの処理
      */
     tick() {
-        if (!this.isRunning) {
+        if (!this._isRunning) {
             return;
         }
 
@@ -158,9 +158,11 @@ class Timer {
     updateCompletionStatus() {
         const statusElement = document.getElementById('status');
         if (statusElement) {
-            statusElement.innerHTML = '🎉 <strong>タイマー完了！</strong><br>お疲れ様でした！';
-            statusElement.style.fontSize = '1.3rem';
-            statusElement.style.color = '#FFD700';
+            statusElement.innerHTML = '🎉✨ <strong>タイマー かんりょう！</strong> ✨🎉<br>🌟 おつかれさまでした！ 🌟';
+            statusElement.style.fontSize = '1.4rem';
+            statusElement.style.color = '#FF6B6B';
+            statusElement.style.background = 'linear-gradient(45deg, #FFE135, #FFA726)';
+            statusElement.style.animation = 'pulse 1s infinite';
         }
     }
 
@@ -169,7 +171,7 @@ class Timer {
      * @returns {boolean} 動作中の場合true
      */
     isRunning() {
-        return this.isRunning;
+        return this._isRunning;
     }
 
     /**
