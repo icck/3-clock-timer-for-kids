@@ -158,9 +158,11 @@ class Timer {
     updateCompletionStatus() {
         const statusElement = document.getElementById('status');
         if (statusElement) {
-            statusElement.innerHTML = '🎉 <strong>タイマー完了！</strong><br>お疲れ様でした！';
-            statusElement.style.fontSize = '1.3rem';
-            statusElement.style.color = '#FFD700';
+            statusElement.innerHTML = '🎉✨ <strong>タイマー かんりょう！</strong> ✨🎉<br>🌟 おつかれさまでした！ 🌟';
+            statusElement.style.fontSize = '1.4rem';
+            statusElement.style.color = '#FF6B6B';
+            statusElement.style.background = 'linear-gradient(45deg, #FFE135, #FFA726)';
+            statusElement.style.animation = 'pulse 1s infinite';
         }
     }
 

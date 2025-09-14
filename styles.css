@@ -7,22 +7,68 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #87CEEB 0%, #98E4FF 50%, #B8F2FF 100%);
     height: 100vh;
     width: 100vw;
     margin: 0;
     padding: 0;
-    color: white;
+    color: #333;
     overflow: hidden;
     position: fixed;
     top: 0;
     left: 0;
+    position: relative;
+}
+
+/* 雲の装飾 */
+body::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80px;
+    height: 40px;
+    background: white;
+    border-radius: 40px;
+    opacity: 0.8;
+    animation: floatCloud1 20s infinite linear;
+    z-index: 1;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    width: 60px;
+    height: 30px;
+    background: white;
+    border-radius: 30px;
+    opacity: 0.7;
+    animation: floatCloud2 25s infinite linear;
+    z-index: 1;
+}
+
+/* キャラクター配置用のコンテナ */
+.character-container {
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.character-image {
+    width: 120px;
+    height: auto;
+    animation: bounce 3s ease-in-out infinite;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .container {
     text-align: center;
     background: transparent;
-    padding: 0;
+    padding: 1rem 0.5rem;
     backdrop-filter: none;
     box-shadow: none;
     width: 100vw;
@@ -32,6 +78,7 @@ body {
     justify-content: space-between;
     box-sizing: border-box;
     position: relative;
+    overflow: hidden;
 }
 
 
@@ -61,9 +108,9 @@ body {
     opacity: 0.3;
     transition: opacity 0.5s ease;
     width: 100%;
-    height: calc((100vh - 150px) / 3);
+    height: calc((100vh - 200px) / 3);
     overflow-x: hidden;
-    padding: 10px 0;
+    padding: 8px 0;
     min-width: 0;
     flex-shrink: 0;
 }
@@ -78,19 +125,19 @@ body {
 
 .block {
     width: calc(100vw / 60);
-    height: calc((100vh - 150px) / 3 - 20px);
+    height: calc((100vh - 200px) / 3 - 16px);
     min-width: 8px;
-    min-height: 40px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, #4CAF50, #66BB6A);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    min-height: 35px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #FFE135, #FFA726);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.8);
     flex-shrink: 0;
 }
 
@@ -144,12 +191,12 @@ body {
 }
 
 .controls {
-    margin: 0.5rem 0;
+    margin: 0.3rem 0;
     flex-shrink: 0;
 }
 
 .start-btn, .restart-btn {
-    background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+    background: linear-gradient(45deg, #4CAF50, #66BB6A);
     color: white;
     border: none;
     padding: 20px 40px;
@@ -157,13 +204,15 @@ body {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
     font-weight: bold;
+    border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
 .start-btn:hover, .restart-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+    background: linear-gradient(45deg, #66BB6A, #81C784);
 }
 
 .start-btn:active, .restart-btn:active {
@@ -172,16 +221,20 @@ body {
 
 
 .status {
-    font-size: 1.2rem;
-    margin: 0.5rem 0;
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
+    margin: 0.3rem 0;
+    padding: 0.6rem;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
-    min-height: 50px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    color: #333;
+    font-weight: 600;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* PC向け最適化 */
@@ -244,7 +297,7 @@ body {
 
 @media (max-width: 768px) {
     .container {
-        padding: 0.3rem;
+        padding: 0.5rem 0.3rem;
     }
     
     .blocks-container {
@@ -254,14 +307,15 @@ body {
     
     .block {
         width: calc((100vw - 10px) / 60);
-        height: calc((100vh - 160px) / 3 - 10px);
+        height: calc((100vh - 180px) / 3 - 10px);
         font-size: 0.5rem;
         border-radius: 3px;
     }
     
     .block-section {
-        height: calc((100vh - 160px) / 3);
+        height: calc((100vh - 180px) / 3);
         gap: 0.5px;
+        padding: 5px 0;
     }
     
     .start-btn, .restart-btn {
@@ -271,19 +325,28 @@ body {
     }
     
     .blocks-container {
-        gap: 5px;
+        gap: 3px;
     }
     
     .status {
         font-size: 0.9rem;
-        padding: 0.5rem;
-        min-height: 35px;
+        padding: 0.4rem;
+        min-height: 30px;
+    }
+    
+    .character-container {
+        bottom: 50px;
+        right: 10px;
+    }
+    
+    .character-image {
+        width: 80px;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 0.2rem;
+        padding: 0.4rem 0.2rem;
     }
     
     .blocks-container {
@@ -293,18 +356,19 @@ body {
     
     .block {
         width: calc((100vw - 5px) / 60);
-        height: calc((100vh - 140px) / 3 - 8px);
+        height: calc((100vh - 160px) / 3 - 8px);
         font-size: 0.4rem;
         border-radius: 2px;
     }
     
     .block-section {
-        height: calc((100vh - 140px) / 3);
+        height: calc((100vh - 160px) / 3);
         gap: 0.3px;
+        padding: 3px 0;
     }
     
     .blocks-container {
-        gap: 3px;
+        gap: 2px;
     }
     
     .start-btn, .restart-btn {
@@ -315,8 +379,17 @@ body {
     
     .status {
         font-size: 0.8rem;
-        padding: 0.4rem;
-        min-height: 30px;
+        padding: 0.3rem;
+        min-height: 25px;
+    }
+    
+    .character-container {
+        bottom: 35px;
+        right: 5px;
+    }
+    
+    .character-image {
+        width: 60px;
     }
 }
 
@@ -615,4 +688,65 @@ body {
 
 .start-btn:hover::before, .restart-btn:hover::before {
     left: 100%;
+}
+
+/* 雲のアニメーション */
+@keyframes floatCloud1 {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(calc(100vw + 100px)); }
+}
+
+@keyframes floatCloud2 {
+    0% { transform: translateX(calc(100vw + 80px)); }
+    100% { transform: translateX(-80px); }
+}
+
+/* キャラクターのバウンスアニメーション */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* 追加の雲スタイル */
+.cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.6;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.cloud-1 {
+    top: 15%;
+    left: 20%;
+    width: 100px;
+    height: 50px;
+    animation: floatCloudSlow 30s infinite linear;
+}
+
+.cloud-2 {
+    top: 40%;
+    right: 10%;
+    width: 70px;
+    height: 35px;
+    animation: floatCloudMedium 35s infinite linear reverse;
+}
+
+.cloud-3 {
+    top: 60%;
+    left: 5%;
+    width: 90px;
+    height: 45px;
+    animation: floatCloudSlow 40s infinite linear;
+}
+
+@keyframes floatCloudSlow {
+    0% { transform: translateX(-120px); }
+    100% { transform: translateX(calc(100vw + 120px)); }
+}
+
+@keyframes floatCloudMedium {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(calc(100vw + 100px)); }
 }

@@ -192,11 +192,11 @@ class ControlManager {
         
         // ボタンのテキストを更新
         if (this.startButton) {
-            this.startButton.textContent = remainingTime === this.timer.duration ? 'スタート' : '再開';
+            this.startButton.textContent = remainingTime === this.timer.duration ? 'スタート' : 'さいかい';
         }
         
         if (this.restartButton) {
-            this.restartButton.textContent = isCompleted ? 'もう一度' : 'リセット';
+            this.restartButton.textContent = isCompleted ? 'もういちど' : 'リセット';
         }
     }
 
@@ -220,7 +220,10 @@ class ControlManager {
         const remainingBlocks = this.blockManager.getRemainingBlocks();
         const progress = this.timer.getProgress();
         
-        const message = `残り時間: ${Math.floor(remainingTime / 60)}分${remainingTime % 60}秒 | 残りブロック: ${remainingBlocks}個 | 進捗: ${Math.round(progress * 100)}%`;
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        const message = `${timeDisplay} | ブロック: ${remainingBlocks}こ | しんちょく: ${Math.round(progress * 100)}%`;
         
         this.updateStatus(message);
     }
