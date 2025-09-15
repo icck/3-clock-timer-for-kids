@@ -45,12 +45,6 @@ class TimerApp {
         this.blockManager = new BlockManager();
         this.blockManager.init();
         
-        // 色管理システム
-        this.colorManager = new ColorManager();
-        
-        // ブロック管理に色管理システムを設定
-        this.blockManager.setColorManager(this.colorManager);
-        
         // アニメーション管理システム
         this.animationManager = new AnimationManager();
         this.animationManager.init();

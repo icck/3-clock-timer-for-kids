@@ -1,10 +1,6 @@
 const TOTAL_BLOCKS = 180;
 const BLOCKS_PER_MINUTE = 60;
 const TOTAL_MINUTES = 3;
-const FADE_OUT_DURATION = 500;
-const FALLBACK_FADE_OUT_DURATION = 300;
-const COLOR_CHANGE_DELAY = 100;
-const COLOR_CHANGE_DURATION = 500;
 
 /**
  * ブロック管理クラス
@@ -17,7 +13,6 @@ class BlockManager {
         this.totalBlocks = TOTAL_BLOCKS; // 3分 = 180個のブロック（1秒ごと）
         this.removedBlocks = 0;
         this.currentMinute = 0;
-        this.colorManager = null;
     }
 
     /**
@@ -25,7 +20,6 @@ class BlockManager {
      */
     init() {
         this.createBlocks();
-        this.setupColorManager();
         console.log(`${this.totalBlocks}個のブロックを作成しました`);
     }
 
@@ -89,23 +83,6 @@ class BlockManager {
     }
 
     /**
-     * 色管理システムを設定
-     */
-    setupColorManager() {
-        if (typeof ColorManager !== 'undefined') {
-            this.colorManager = new ColorManager();
-        }
-    }
-
-    /**
-     * 色管理システムを外部から設定
-     * @param {ColorManager} colorManager 色管理インスタンス
-     */
-    setColorManager(colorManager) {
-        this.colorManager = colorManager;
-    }
-
-    /**
      * アニメーション管理システムを外部から設定
      * @param {AnimationManager} animationManager アニメーション管理インスタンス
      */
@@ -144,7 +121,7 @@ class BlockManager {
             
             // アニメーション管理システムを使用してブロックを削除
             if (this.animationManager && typeof this.animationManager.fadeOutBlock === 'function') {
-                this.animationManager.fadeOutBlock(block, FADE_OUT_DURATION).then(() => {
+                this.animationManager.fadeOutBlock(block).then(() => {
                     block.style.display = 'none';
                 });
             } else {
@@ -152,7 +129,7 @@ class BlockManager {
                 block.classList.add('fade-out');
                 setTimeout(() => {
                     block.style.display = 'none';
-                }, FALLBACK_FADE_OUT_DURATION);
+                }, 300); // FALLBACK_FADE_OUT_DURATION is not defined here anymore
             }
 
             this.removedBlocks++;
@@ -201,15 +178,10 @@ class BlockManager {
             index >= this.removedBlocks && block.style.display !== 'none'
         );
 
-        if (this.colorManager && typeof this.colorManager.animateMultipleColorChange === 'function') {
-            // アニメーション付きで色を変更
-            this.colorManager.animateMultipleColorChange(remainingBlocks, newColor, COLOR_CHANGE_DELAY, COLOR_CHANGE_DURATION);
-        } else {
-            // 通常の色変更
-            remainingBlocks.forEach(block => {
-                block.style.background = newColor;
-            });
-        }
+        // 通常の色変更
+        remainingBlocks.forEach(block => {
+            block.style.background = newColor;
+        });
 
         console.log(`ブロックの色を分 ${minute} の色に変更しました`);
     }

@@ -86,84 +86,11 @@ class Timer {
     complete() {
         this.stop();
         
-        // 完了時の特別な処理
-        this.handleCompletion();
-        
         if (this.onComplete) {
             this.onComplete();
         }
 
         console.log('タイマーが完了しました');
-    }
-
-    /**
-     * 完了時の特別な処理
-     */
-    handleCompletion() {
-        // 完了音を再生
-        this.playCompletionSound();
-        
-        // 完了アニメーションを開始
-        this.startCompletionAnimation();
-        
-        // ステータスを更新
-        this.updateCompletionStatus();
-    }
-
-    /**
-     * 完了音を再生
-     */
-    playCompletionSound() {
-        try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            // 3つの音で完了を表現
-            oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
-            oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.2); // E5
-            oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.4); // G5
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.8);
-        } catch (error) {
-            console.log('完了音の再生に失敗しました:', error);
-        }
-    }
-
-    /**
-     * 完了アニメーションを開始
-     */
-    startCompletionAnimation() {
-        const container = document.querySelector('.container');
-        if (container) {
-            container.classList.add('timer-complete');
-            
-            // 3秒後にアニメーションを削除
-            setTimeout(() => {
-                container.classList.remove('timer-complete');
-            }, 3000);
-        }
-    }
-
-    /**
-     * 完了ステータスを更新
-     */
-    updateCompletionStatus() {
-        const statusElement = document.getElementById('status');
-        if (statusElement) {
-            statusElement.innerHTML = '🎉✨ <strong>タイマー かんりょう！</strong> ✨🎉<br>🌟 おつかれさまでした！ 🌟';
-            statusElement.style.fontSize = '1.4rem';
-            statusElement.style.color = '#FF6B6B';
-            statusElement.style.background = 'linear-gradient(45deg, #FFE135, #FFA726)';
-            statusElement.style.animation = 'pulse 1s infinite';
-        }
     }
 
     /**
