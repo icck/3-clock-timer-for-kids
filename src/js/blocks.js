@@ -1,3 +1,11 @@
+const TOTAL_BLOCKS = 180;
+const BLOCKS_PER_MINUTE = 60;
+const TOTAL_MINUTES = 3;
+const FADE_OUT_DURATION = 500;
+const FALLBACK_FADE_OUT_DURATION = 300;
+const COLOR_CHANGE_DELAY = 100;
+const COLOR_CHANGE_DURATION = 500;
+
 /**
  * ブロック管理クラス
  * タイマーの視覚的表現としてブロックを管理
@@ -6,7 +14,7 @@ class BlockManager {
     constructor() {
         this.container = document.getElementById('blocks-container');
         this.blocks = [];
-        this.totalBlocks = 180; // 3分 = 180個のブロック（1秒ごと）
+        this.totalBlocks = TOTAL_BLOCKS; // 3分 = 180個のブロック（1秒ごと）
         this.removedBlocks = 0;
         this.currentMinute = 0;
         this.colorManager = null;
@@ -29,13 +37,13 @@ class BlockManager {
         this.blocks = [];
 
         // 3つのセクション（各60ブロック）を作成
-        for (let minute = 0; minute < 3; minute++) {
+        for (let minute = 0; minute < TOTAL_MINUTES; minute++) {
             const section = this.createBlockSection(minute);
             this.container.appendChild(section);
             
             // 各セクションに60個のブロックを作成
-            for (let i = 0; i < 60; i++) {
-                const block = this.createBlock(minute * 60 + i, minute);
+            for (let i = 0; i < BLOCKS_PER_MINUTE; i++) {
+                const block = this.createBlock(minute * BLOCKS_PER_MINUTE + i, minute);
                 this.blocks.push(block);
                 section.appendChild(block);
             }
@@ -117,15 +125,15 @@ class BlockManager {
         // 上段（0-59）→ 中段（60-119）→ 下段（120-179）
         let blockIndex;
         
-        if (this.removedBlocks < 60) {
+        if (this.removedBlocks < BLOCKS_PER_MINUTE) {
             // 上段: 右から左（59, 58, 57, ..., 0）
-            blockIndex = 59 - this.removedBlocks;
-        } else if (this.removedBlocks < 120) {
+            blockIndex = (BLOCKS_PER_MINUTE - 1) - this.removedBlocks;
+        } else if (this.removedBlocks < BLOCKS_PER_MINUTE * 2) {
             // 中段: 右から左（119, 118, 117, ..., 60）
-            blockIndex = 119 - (this.removedBlocks - 60);
+            blockIndex = (BLOCKS_PER_MINUTE * 2 - 1) - (this.removedBlocks - BLOCKS_PER_MINUTE);
         } else {
             // 下段: 右から左（179, 178, 177, ..., 120）
-            blockIndex = 179 - (this.removedBlocks - 120);
+            blockIndex = (TOTAL_BLOCKS - 1) - (this.removedBlocks - BLOCKS_PER_MINUTE * 2);
         }
         
         const block = this.blocks[blockIndex];
@@ -136,7 +144,7 @@ class BlockManager {
             
             // アニメーション管理システムを使用してブロックを削除
             if (this.animationManager && typeof this.animationManager.fadeOutBlock === 'function') {
-                this.animationManager.fadeOutBlock(block, 500).then(() => {
+                this.animationManager.fadeOutBlock(block, FADE_OUT_DURATION).then(() => {
                     block.style.display = 'none';
                 });
             } else {
@@ -144,19 +152,19 @@ class BlockManager {
                 block.classList.add('fade-out');
                 setTimeout(() => {
                     block.style.display = 'none';
-                }, 300);
+                }, FALLBACK_FADE_OUT_DURATION);
             }
 
             this.removedBlocks++;
             
             // 段の情報を表示
             let rowInfo = '';
-            if (this.removedBlocks <= 60) {
-                rowInfo = `上段 (${this.removedBlocks}/60)`;
-            } else if (this.removedBlocks <= 120) {
-                rowInfo = `中段 (${this.removedBlocks - 60}/60)`;
+            if (this.removedBlocks <= BLOCKS_PER_MINUTE) {
+                rowInfo = `上段 (${this.removedBlocks}/${BLOCKS_PER_MINUTE})`;
+            } else if (this.removedBlocks <= BLOCKS_PER_MINUTE * 2) {
+                rowInfo = `中段 (${this.removedBlocks - BLOCKS_PER_MINUTE}/${BLOCKS_PER_MINUTE})`;
             } else {
-                rowInfo = `下段 (${this.removedBlocks - 120}/60)`;
+                rowInfo = `下段 (${this.removedBlocks - BLOCKS_PER_MINUTE * 2}/${BLOCKS_PER_MINUTE})`;
             }
             
             console.log(`ブロック ${blockIndex + 1} を削除しました (${rowInfo}, 残り: ${this.totalBlocks - this.removedBlocks})`);
@@ -195,7 +203,7 @@ class BlockManager {
 
         if (this.colorManager && typeof this.colorManager.animateMultipleColorChange === 'function') {
             // アニメーション付きで色を変更
-            this.colorManager.animateMultipleColorChange(remainingBlocks, newColor, 100, 500);
+            this.colorManager.animateMultipleColorChange(remainingBlocks, newColor, COLOR_CHANGE_DELAY, COLOR_CHANGE_DURATION);
         } else {
             // 通常の色変更
             remainingBlocks.forEach(block => {
