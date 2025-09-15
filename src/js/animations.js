@@ -1,12 +1,3 @@
-const FADE_OUT_DURATION = 500;
-const PULSE_DURATION = 300;
-const BOUNCE_DURATION = 600;
-const COLOR_CHANGE_DURATION = 500;
-const MULTIPLE_COLOR_CHANGE_DELAY = 100;
-const CELEBRATION_DURATION = 1000;
-const CHAIN_ANIMATION_DELAY = 50;
-const PROGRESS_ANIMATION_DURATION = 300;
-
 /**
  * アニメーション管理クラス
  * ブロックのアニメーション効果を管理
@@ -31,7 +22,7 @@ class AnimationManager {
      * @param {number} duration アニメーション時間（ミリ秒）
      * @returns {Promise} アニメーション完了のPromise
      */
-    fadeOutBlock(block, duration = FADE_OUT_DURATION) {
+    fadeOutBlock(block, duration = config.FADE_OUT_DURATION) {
         return new Promise((resolve) => {
             if (!block) {
                 resolve();
@@ -55,7 +46,7 @@ class AnimationManager {
      * @param {HTMLElement} block 対象ブロック
      * @param {number} duration アニメーション時間（ミリ秒）
      */
-    pulseBlock(block, duration = PULSE_DURATION) {
+    pulseBlock(block, duration = config.PULSE_DURATION) {
         if (!block) return;
 
         block.classList.add('block-pulse');
@@ -70,7 +61,7 @@ class AnimationManager {
      * @param {HTMLElement} block 対象ブロック
      * @param {number} duration アニメーション時間（ミリ秒）
      */
-    bounceBlock(block, duration = BOUNCE_DURATION) {
+    bounceBlock(block, duration = config.BOUNCE_DURATION) {
         if (!block) return;
 
         block.classList.add('block-bounce');
@@ -87,7 +78,7 @@ class AnimationManager {
      * @param {number} duration アニメーション時間（ミリ秒）
      * @returns {Promise} アニメーション完了のPromise
      */
-    animateColorChange(block, newColor, duration = COLOR_CHANGE_DURATION) {
+    animateColorChange(block, newColor, duration = config.COLOR_CHANGE_DURATION) {
         return new Promise((resolve) => {
             if (!block) {
                 resolve();
@@ -120,7 +111,7 @@ class AnimationManager {
      * @param {number} delay 各ブロック間の遅延（ミリ秒）
      * @param {number} duration アニメーション時間（ミリ秒）
      */
-    animateMultipleColorChange(blocks, newColor, delay = MULTIPLE_COLOR_CHANGE_DELAY, duration = COLOR_CHANGE_DURATION) {
+    animateMultipleColorChange(blocks, newColor, delay = config.MULTIPLE_COLOR_CHANGE_DELAY, duration = config.COLOR_CHANGE_DURATION) {
         blocks.forEach((block, index) => {
             setTimeout(() => {
                 this.animateColorChange(block, newColor, duration);
@@ -133,7 +124,7 @@ class AnimationManager {
      * @param {HTMLElement} container 対象コンテナ
      * @param {number} duration アニメーション時間（ミリ秒）
      */
-    celebrationAnimation(container, duration = CELEBRATION_DURATION) {
+    celebrationAnimation(container, duration = config.CELEBRATION_DURATION) {
         if (!container) return;
 
         container.classList.add('completion-celebration');
@@ -149,7 +140,7 @@ class AnimationManager {
      * @param {string} animationType アニメーションタイプ
      * @param {number} delay 各ブロック間の遅延（ミリ秒）
      */
-    chainAnimation(blocks, animationType = 'pulse', delay = CHAIN_ANIMATION_DELAY) {
+    chainAnimation(blocks, animationType = 'pulse', delay = config.CHAIN_ANIMATION_DELAY) {
         blocks.forEach((block, index) => {
             setTimeout(() => {
                 switch (animationType) {
@@ -173,7 +164,7 @@ class AnimationManager {
      * @param {number} progress 進捗値（0-1）
      * @param {number} duration アニメーション時間（ミリ秒）
      */
-    animateProgress(progressBar, progress, duration = PROGRESS_ANIMATION_DURATION) {
+    animateProgress(progressBar, progress, duration = config.PROGRESS_ANIMATION_DURATION) {
         if (!progressBar) return;
 
         progressBar.style.transition = `width ${duration}ms ease-out`;

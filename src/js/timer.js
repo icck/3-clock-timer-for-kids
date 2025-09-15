@@ -4,7 +4,7 @@
  */
 class Timer {
     constructor() {
-        this.duration = 180; // 3分 = 180秒
+        this.duration = config.TIMER_DURATION; // 3分 = 180秒
         this.remainingTime = this.duration;
         this._isRunning = false;
         this.intervalId = null;
