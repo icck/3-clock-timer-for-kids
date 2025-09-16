@@ -267,6 +267,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = new TimerApp();
     app.start();
     
-    // グローバルに公開（デバッグ用）
-    window.timerApp = app;
+    
 });
